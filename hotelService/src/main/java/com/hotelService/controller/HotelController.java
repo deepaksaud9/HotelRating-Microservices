@@ -4,6 +4,7 @@ import com.hotelService.entities.Hotel;
 import com.hotelService.response.ApiResponse;
 import com.hotelService.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ public class HotelController {
 
     @Autowired
     private HotelService hotelService;
+
 
 
     @PostMapping("/save")

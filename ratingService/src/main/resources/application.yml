@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8083
 spring:
   datasource:
     password: root
@@ -11,7 +11,7 @@ spring:
     properties:
       dialect: org.hibernate.dialect.MySQL5Dialect
   application:
-    name: User-service
+    name: Rating-service
 
 eureka:
   instance:

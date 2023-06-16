@@ -52,7 +52,7 @@ public class UserController {
         ApiResponse<User> userResponse = ApiResponse.<User>builder()
                 .statusName(HttpStatus.FOUND.name())
                 .statusCode(HttpStatus.FOUND.value())
-                .message("user Found with "+userId)
+                .message("user Found with userId: "+userId)
                 .response(user)
                 .build();
 
