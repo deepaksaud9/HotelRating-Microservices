@@ -3,8 +3,10 @@ package com.ratingService.service.implService;
 import com.ratingService.entities.Rating;
 import com.ratingService.exception.ResourceNotFoundException;
 import com.ratingService.repository.RatingRepository;
+import com.ratingService.response.ApiResponse;
 import com.ratingService.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,8 +32,19 @@ public class RatingServiceImpl implements RatingService {
     public List<Rating> getRatingByUserId(String userId) {
 
         List<Rating> optionalRatings = ratingRepo.findRatingByUserId(userId);
-        if (optionalRatings.isEmpty()){
-            throw new ResourceNotFoundException("no Data is available");
+//        if (optionalRatings.isEmpty()){
+//            throw new ResourceNotFoundException("no Data is available");
+//        }
+
+        if(optionalRatings.isEmpty()){
+            ApiResponse.builder()
+                    .message("no rating available")
+                    .statusCode(HttpStatus.FOUND.value())
+                    .statusName(HttpStatus.FOUND.name())
+                    .success(true)
+                    .response(optionalRatings.isEmpty())
+                    .build();
+
         }
 
         return optionalRatings;
@@ -43,7 +56,14 @@ public class RatingServiceImpl implements RatingService {
         List<Rating> optionalRatings = ratingRepo.findRatingByHotelId(hotelId);
 
         if(optionalRatings.isEmpty()){
-            throw new ResourceNotFoundException("no data available");
+            ApiResponse.builder()
+                    .message("no rating available")
+                    .statusCode(HttpStatus.FOUND.value())
+                    .statusName(HttpStatus.FOUND.name())
+                    .success(true)
+                    .response(optionalRatings.isEmpty())
+                    .build();
+
         }
         return optionalRatings;
     }
