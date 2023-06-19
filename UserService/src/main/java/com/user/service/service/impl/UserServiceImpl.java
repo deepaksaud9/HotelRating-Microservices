@@ -5,10 +5,10 @@ import com.user.service.entities.Hotel;
 import com.user.service.entities.Rating;
 import com.user.service.entities.User;
 import com.user.service.exceptions.ResourceNotFoundException;
+import com.user.service.external.services.HotelService;
 import com.user.service.repository.UserRepository;
 import com.user.service.response.ApiResponse;
 import com.user.service.service.UserService;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,10 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-
-//    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private HotelService hotelService;
 
    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
@@ -56,8 +57,8 @@ public class UserServiceImpl implements UserService {
                 System.out.println("User: "+user.getEmail()+"The rating is Present .............................");
                 if(user.getRatings().isEmpty()){
                     ApiResponse.builder()
-                            .statusName(HttpStatus.FOUND.name())
-                            .statusCode(HttpStatus.FOUND.value())
+                            .statusName(HttpStatus.OK.name())
+                            .statusCode(HttpStatus.OK.value())
                             .message("no rating is available")
                             .success(true)
                             .response(null)
@@ -66,11 +67,11 @@ public class UserServiceImpl implements UserService {
                 ArrayList list = mapper.convertValue(response.getResponse(),ArrayList.class);
                 ArrayList<ActualRatingResponse> ratings = new ArrayList<>();
 
-
-
                 list.stream().forEach(rating -> {
                     Rating rating1 = mapper.convertValue(rating, Rating.class);
-                        Object response1 = restTemplate.getForObject("http://HOTEL-SERVICE/hotel/"+rating1.getHotelId(),Object.class);
+//                        Object response1 = restTemplate.getForObject("http://HOTEL-SERVICE/hotel/"+rating1.getHotelId(),Object.class);
+                    Object response1 = hotelService.getHotel(rating1.getHotelId());
+//                    System.out.println("The hotel is: "+response1.getResponse().toString());
                     ApiResponse apiResponse = mapper.convertValue(response1,ApiResponse.class);
                     ActualRatingResponse actualRatingResponse = new ActualRatingResponse();
                     actualRatingResponse.setFeedback(rating1.getFeedback());
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
                 });
 
 //                System.out.println("The first rating is: "+ratings.get(0).toString());
-                logger.info(String.valueOf(ratings));
+//                logger.info(String.valueOf(ratings));
                 user.setRatings(ratings);
             }
             else{

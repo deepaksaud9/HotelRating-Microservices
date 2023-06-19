@@ -43,32 +43,32 @@ public class HotelController {
 
         ApiResponse<List<Hotel>> responseHotel = ApiResponse
                 .<List<Hotel>>builder()
-                .statusCode(HttpStatus.FOUND.value())
-                .statusName(HttpStatus.FOUND.name())
+                .statusCode(HttpStatus.OK.value())
+                .statusName(HttpStatus.OK.name())
                 .message("Hotel Found Successfully")
                 .response(getHotels)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(responseHotel);
+        return ResponseEntity.status(HttpStatus.OK).body(responseHotel);
 
 
     }
 
     @GetMapping("/{hotelId}")
-    public ResponseEntity<ApiResponse> getHotel(@PathVariable("hotelId") String id){
+    public ResponseEntity<ApiResponse> getHotel(@PathVariable("hotelId") String hotelId){
 
-        Hotel getHotel = hotelService.getHotelById(id);
+        Hotel getHotel = hotelService.getHotelById(hotelId);
 
         ApiResponse<Hotel> hotelApiResponse = ApiResponse
                 .<Hotel>builder()
                 .success(true)
                 .message("Hotel Successfully Found")
-                .statusCode(HttpStatus.FOUND.value())
-                .statusName(HttpStatus.FOUND.name())
+                .statusCode(HttpStatus.OK.value())
+                .statusName(HttpStatus.OK.name())
                 .response(getHotel)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(hotelApiResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(hotelApiResponse);
     }
 
 

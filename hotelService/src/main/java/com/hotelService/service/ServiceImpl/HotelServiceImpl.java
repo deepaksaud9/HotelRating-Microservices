@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +31,7 @@ public class HotelServiceImpl implements HotelService {
         List<Hotel> hotels = hotelRepo.findAll();
 
         if(hotels.isEmpty()){
-            ApiResponse.builder()
-                    .message("hotel not available")
-                    .success(true)
-                    .statusCode(HttpStatus.FOUND.value())
-                    .statusName(HttpStatus.FOUND.name())
-                    .response(hotels.isEmpty())
-                    .build();
+            throw new ResourceNotFoundException("hotel not found");
         }
 
         return hotels;
@@ -49,14 +44,8 @@ public class HotelServiceImpl implements HotelService {
        Optional<Hotel> hotel = hotelRepo.findById(hotelId);
 
 //        if(!hotel.isPresent()){
-            if(hotel.isEmpty()){
-                ApiResponse.builder()
-                        .message("hotel not available")
-                        .success(true)
-                        .statusCode(HttpStatus.FOUND.value())
-                        .statusName(HttpStatus.FOUND.name())
-                        .response(hotel.isEmpty())
-                        .build();
+            if(!hotel.isPresent()){
+               throw new ResourceNotFoundException("hotel not found");
             }
 
         return hotel.get();
