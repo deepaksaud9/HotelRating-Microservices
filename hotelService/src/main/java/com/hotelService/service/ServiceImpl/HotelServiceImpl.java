@@ -3,8 +3,10 @@ package com.hotelService.service.ServiceImpl;
 import com.hotelService.entities.Hotel;
 import com.hotelService.exception.ResourceNotFoundException;
 import com.hotelService.repository.HotelRepository;
+import com.hotelService.response.ApiResponse;
 import com.hotelService.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +27,19 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public List<Hotel> getAllHotel() {
 
-        List<Hotel> getHotels = hotelRepo.findAll();
-        return getHotels;
+        List<Hotel> hotels = hotelRepo.findAll();
+
+        if(hotels.isEmpty()){
+            ApiResponse.builder()
+                    .message("hotel not available")
+                    .success(true)
+                    .statusCode(HttpStatus.FOUND.value())
+                    .statusName(HttpStatus.FOUND.name())
+                    .response(hotels.isEmpty())
+                    .build();
+        }
+
+        return hotels;
     }
 
     @Override
@@ -35,9 +48,17 @@ public class HotelServiceImpl implements HotelService {
 
        Optional<Hotel> hotel = hotelRepo.findById(hotelId);
 
-        if(!hotel.isPresent()){
-            throw new ResourceNotFoundException("hotel not found");
-        }
+//        if(!hotel.isPresent()){
+            if(hotel.isEmpty()){
+                ApiResponse.builder()
+                        .message("hotel not available")
+                        .success(true)
+                        .statusCode(HttpStatus.FOUND.value())
+                        .statusName(HttpStatus.FOUND.name())
+                        .response(hotel.isEmpty())
+                        .build();
+            }
+
         return hotel.get();
     }
 }
