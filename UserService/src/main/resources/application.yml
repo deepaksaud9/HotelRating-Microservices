@@ -1,24 +1,71 @@
+#setting port
 server:
   port: 8081
+
+#for setup project/application name for microservice client
 spring:
+  application:
+    name: USER-SERVICE
+
+#setting mysql database
   datasource:
-    password: root
     url: jdbc:mysql://localhost:3306/microservices
+    password: root
     username: root
+
+#Jpa configuration
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       dialect: org.hibernate.dialect.MySQL5Dialect
-  application:
-    name: User-service
 
-eureka:
-  instance:
-    ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#link this client to the config server
+  config:
+    import: optional:configserver:http://localhost:8888/
+
+#configuration for actuator
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+#configuration for resilience4j circuitBreaker
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 6s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+# resilience4j circuit breaker RETRY
+  retry:
+    instances:
+      ratingHotelService:
+        maxAttempts: 3
+        waitDuration: 5s
+
+# resilience4j circuit breaker RateLimiter
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limitRefreshPeriod: 4s
+        limitForPeriod: 2
+        timeoutDuration: 0s
+
+
 
